@@ -2,6 +2,6 @@
 /frontend-dist/pkg
 *.log
 *.mp4
-*.txt
+!/frontend-dist/robots.txt
 rustypipe_cache/
 botguard.zip
