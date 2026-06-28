@@ -1,0 +1,39 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/merger-wasm",
+    "crates/server",
+    "crates/frontend",
+]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+tokio = { version = "1", features = ["full", "macros"] }
+axum = { version = "0.7", features = ["macros"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls-webpki-roots", "stream"] }
+rustypipe = { version = "0.11", default-features = false, features = ["rustls-tls-webpki-roots"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+async-trait = "0.1"
+bytes = "1"
+futures-util = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1"
+once_cell = "1"
+tempfile = "3"
+mp4 = { version = "0.14", default-features = false }
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = ["ReadableStream", "Uint8Array", "Blob", "BlobPropertyBag", "Url", "Window", "Document", "HtmlAnchorElement", "console"] }
+js-sys = "0.3"
+console_error_panic_hook = "0.1"
+serde_json = "1"
+serde_bytes = "0.11"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

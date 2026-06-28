@@ -1,0 +1,29 @@
+[package]
+name = "youtubeopen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+youtubeopen-core = { path = "../core" }
+tokio = { workspace = true, features = ["full"] }
+axum = { workspace = true, features = ["macros"] }
+tower-http = { version = "0.5", features = ["fs", "cors"] }
+reqwest = { workspace = true, features = ["json", "rustls-tls-webpki-roots", "stream"] }
+rustypipe = { workspace = true, default-features = false, features = ["rustls-tls-webpki-roots"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
+async-trait = { workspace = true }
+tokio-util = { version = "0.7", features = ["io", "io-util"] }
+serde_json = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+chrono = { workspace = true, features = ["serde"] }
+tempfile = { workspace = true }
+futures-util = { workspace = true }
+bytes = { workspace = true }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

@@ -1,0 +1,10 @@
+target/
+.git/
+*.mp4
+*.log
+*.txt
+rustypipe_cache/
+botguard/
+test_download*.mp4
+bench_*.mp4
+dl_*.mp4

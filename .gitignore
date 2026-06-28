@@ -1,0 +1,7 @@
+/target
+/frontend-dist/pkg
+*.log
+*.mp4
+*.txt
+rustypipe_cache/
+botguard.zip

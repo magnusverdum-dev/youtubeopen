@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTubeOpen</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+h1 {
+    font-size: 2rem; color: #00ff41; text-align: center;
+    margin-bottom: 10px; text-transform: uppercase; letter-spacing: 4px;
+}
+.subtitle { text-align: center; color: #666; font-size: 0.85rem; margin-bottom: 40px; }
+.backend-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+.backend-btn {
+    background: transparent; border: 1px solid #333; color: #888;
+    padding: 8px 20px; font-family: inherit; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.2s;
+}
+.backend-btn:hover { border-color: #666; color: #ccc; }
+.backend-btn.active { border-color: #00ff41; color: #00ff41; background: rgba(0,255,64,0.05); }
+.panel {
+    background: #111; border: 1px solid #222; border-radius: 8px;
+    padding: 30px; margin-bottom: 30px;
+}
+.panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #222;
+}
+.panel-title { color: #00ff41; font-size: 0.85rem; letter-spacing: 1px; }
+.health { color: #666; font-size: 0.75rem; }
+.health.healthy { color: #00ff41; }
+.health.unhealthy { color: #ff4444; }
+.url-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.url-input {
+    flex: 1; background: #0a0a0a; border: 1px solid #333; color: #e0e0e0;
+    padding: 12px 15px; font-family: inherit; font-size: 0.9rem;
+    border-radius: 4px; outline: none;
+}
+.url-input:focus { border-color: #00ff41; }
+.url-input::placeholder { color: #444; }
+.btn-fetch {
+    background: #00ff41; color: #000; border: none; padding: 12px 30px;
+    font-family: inherit; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; border-radius: 4px; letter-spacing: 1px;
+}
+.btn-fetch:hover { background: #00cc33; }
+.btn-fetch:disabled { background: #333; color: #666; cursor: not-allowed; }
+.status { font-size: 0.75rem; color: #00ff41; margin-bottom: 15px; }
+.status.error { color: #ff4444; }
+.status.warning { color: #ffaa00; }
+.status.info { color: #4488ff; }
+.progress { margin-bottom: 20px; }
+.progress-bar { height: 4px; background: #222; border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.progress-fill { height: 100%; background: #00ff41; width: 60%; transition: width 0.3s; }
+.progress-text { font-size: 0.75rem; color: #666; }
+.info-panel { margin-top: 20px; }
+.video-title { font-size: 1.1rem; color: #fff; margin-bottom: 5px; word-break: break-word; }
+.video-meta { font-size: 0.8rem; color: #666; margin-bottom: 20px; }
+.format-list { display: grid; gap: 8px; }
+.format-btn {
+    background: transparent; border: 1px solid #333; color: #ccc;
+    padding: 12px 15px; font-family: inherit; font-size: 0.8rem;
+    cursor: pointer; text-align: left; border-radius: 4px;
+    display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;
+}
+.format-btn:hover { border-color: #00ff41; color: #00ff41; }
+.format-main { flex: 1; }
+.format-meta { color: #666; font-size: 0.75rem; }
+.format-size { color: #4488ff; font-size: 0.75rem; }
+.error-msg { color: #ff4444; font-size: 0.8rem; margin-top: 10px; }
+.local-note { text-align: center; color: #444; font-size: 0.7rem; margin-top: 40px; }
+.local-note a { color: #00ff41; text-decoration: none; }
+@media (max-width: 768px) {
+    .container { padding: 20px 15px; }
+    h1 { font-size: 1.5rem; }
+    .panel { padding: 20px; }
+    .url-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div id="main"></div>
+<script type="module">
+import init from './pkg/youtubeopen_frontend.js';
+await init();
+</script>
+</body>
+</html>
