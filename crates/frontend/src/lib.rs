@@ -38,7 +38,6 @@ struct HealthResponse {
 }
 
 fn do_health_check(
-    backend: Signal<String>,
     mut health_text: Signal<String>,
     mut health_class: Signal<String>,
     mut fetch_disabled: Signal<bool>,
@@ -46,7 +45,7 @@ fn do_health_check(
     mut status_class: Signal<String>,
 ) {
     spawn(async move {
-        match Request::get(&format!("/api/health?backend={}", backend())).send().await {
+        match Request::get(&format!("/api/health?backend={BACKEND}")).send().await {
             Ok(resp) => {
                 if let Ok(h) = resp.json::<HealthResponse>().await {
                     if h.available.unwrap_or(false) {
@@ -76,7 +75,6 @@ fn do_health_check(
 
 fn do_fetch_info(
     url: Signal<String>,
-    backend: Signal<String>,
     mut status: Signal<String>,
     mut status_class: Signal<String>,
     mut error_msg: Signal<String>,
@@ -103,11 +101,9 @@ fn do_fetch_info(
 
         let encoded_url = js_sys::encode_uri_component(&u)
             .as_string().unwrap_or_else(|| u.clone());
-        let encoded_backend = js_sys::encode_uri_component(&backend())
-            .as_string().unwrap_or_else(|| backend());
 
         match Request::get(&format!(
-            "/api/info?url={}&backend={}", encoded_url, encoded_backend
+            "/api/info?url={}&backend={BACKEND}", encoded_url
         )).send().await {
             Ok(resp) => {
                 if let Ok(data) = resp.json::<VideoInfo>().await {
@@ -142,9 +138,10 @@ fn do_fetch_info(
     });
 }
 
+const BACKEND: &str = "ytdlp";
+
 fn App() -> Element {
     let mut url = use_signal(|| String::new());
-    let mut backend = use_signal(|| "ytdlp".to_string());
     let mut status = use_signal(|| "READY".to_string());
     let status_class = use_signal(|| "".to_string());
     let error_msg = use_signal(|| String::new());
@@ -159,22 +156,14 @@ fn App() -> Element {
 
     use_effect(move || {
         do_health_check(
-            backend.clone(), health_text.clone(), health_class.clone(),
+            health_text.clone(), health_class.clone(),
             fetch_disabled.clone(), status.clone(), status_class.clone(),
         );
     });
 
-    let mut on_switch_backend = move |b: &str| {
-        backend.set(b.to_string());
-        do_health_check(
-            backend.clone(), health_text.clone(), health_class.clone(),
-            fetch_disabled.clone(), status.clone(), status_class.clone(),
-        );
-    };
-
     let on_fetch = move || {
         do_fetch_info(
-            url.clone(), backend.clone(), status.clone(), status_class.clone(),
+            url.clone(), status.clone(), status_class.clone(),
             error_msg.clone(), video_title.clone(), video_duration.clone(),
             formats.clone(), info_visible.clone(), loading.clone(), fetch_disabled.clone(),
         );
@@ -182,14 +171,12 @@ fn App() -> Element {
 
     let mut on_download = move |fmt: FormatEntry| {
         let u = url();
-        let b = backend();
         let download_url = format!(
-            "/api/download?url={}&format_id={}&merge_audio=true&backend={}",
+            "/api/download?url={}&format_id={}&merge_audio=true&backend={BACKEND}",
             js_sys::encode_uri_component(&u)
                 .as_string().unwrap_or_else(|| u.clone()),
             js_sys::encode_uri_component(&fmt.format_id)
                 .as_string().unwrap_or_else(|| fmt.format_id.clone()),
-            b
         );
         if let Some(win) = web_sys::window() {
             let _ = win.open_with_url_and_target(&download_url, "_blank");
@@ -201,19 +188,6 @@ fn App() -> Element {
         div { class: "container",
             h1 { "YouTubeOpen" }
             div { class: "subtitle", "100% Rust - Axum + Dioxus" }
-
-            div { class: "backend-toggle",
-                BackendButton {
-                    label: "yt-dlp",
-                    active: backend() == "ytdlp",
-                    onclick: move |_| on_switch_backend("ytdlp")
-                }
-                BackendButton {
-                    label: "PureRust",
-                    active: backend() == "purerust",
-                    onclick: move |_| on_switch_backend("purerust")
-                }
-            }
 
             div { class: "panel",
                 div { class: "panel-header",
@@ -282,21 +256,10 @@ fn App() -> Element {
             }
 
             div { class: "local-note",
-                "Server running on ",
-                a { href: "http://localhost:3000", "localhost:3000" }
+                "Live at ",
+                a { href: "https://youtubeopen.fly.dev", "youtubeopen.fly.dev" }
                 " | 100% Rust | Axum + Dioxus"
             }
-        }
-    }
-}
-
-#[component]
-fn BackendButton(label: String, active: bool, onclick: EventHandler<MouseEvent>) -> Element {
-    rsx! {
-        button {
-            class: if active { "backend-btn active" } else { "backend-btn" },
-            onclick: move |e| onclick.call(e),
-            "{label}"
         }
     }
 }
